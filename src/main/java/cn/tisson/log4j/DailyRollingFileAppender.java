@@ -1,4 +1,4 @@
-package cn.tisson.container.log4j.extensions;
+package cn.tisson.log4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,7 +121,7 @@ public class DailyRollingFileAppender extends FileAppender {
     /**
      * Rollover the current file to a new file.
      */
-    private void rollOver() throws IOException {
+    public void rollOver() throws IOException {
         /* Compute filename, but only if datePattern is specified */
         if (this.getDatePattern() == null) {
             errorHandler.error("Missing DatePattern option in rollOver().");
@@ -202,7 +202,7 @@ public class DailyRollingFileAppender extends FileAppender {
     /**
      * 获取日期格式是按什么单位滚动的（单位：年、月、周、日、时、分）
      */
-    private int getType() {
+    public int getType() {
         // The gmtTimeZone is used only in computeCheckPeriod() method.
         TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
         RollingCalendar rollingCalendar = new RollingCalendar(gmtTimeZone, Locale.getDefault());
@@ -232,32 +232,10 @@ public class DailyRollingFileAppender extends FileAppender {
      * 
      * @return 下次滚动时间（单位：ms）
      */
-    private String getDeleteDateStr(Date now, int type) {
+    public String getDeleteDateStr(Date now, int type) {
         if (sdf == null) {
             sdf = new SimpleDateFormat(this.getDatePattern());
         }
         return sdf.format(this.getRc().getNextCheckDate(now, type, -maxBackupIndex));
-    }
-
-    // static final int TOP_OF_TROUBLE = -1;
-    // static final int TOP_OF_MINUTE = 0;
-    // static final int TOP_OF_HOUR = 1;
-    // static final int HALF_DAY = 2;
-    // static final int TOP_OF_DAY = 3;
-    // static final int TOP_OF_WEEK = 4;
-    // static final int TOP_OF_MONTH = 5;
-    public static void main(String[] args) {
-        DailyRollingFileAppender dailyRollingFileAppender = new DailyRollingFileAppender();
-        dailyRollingFileAppender.setDatePattern("'.'yyyy-MM-dd");
-        int type = dailyRollingFileAppender.getType();
-        System.out.println("type: " + type);
-        RollingCalendar rc = dailyRollingFileAppender.getRc();
-        long nextCheckMillis = rc.getNextCheckMillis(new Date(), type);
-        System.out.println("nextCheckMillis: " + nextCheckMillis);
-         nextCheckMillis = 1498838400000L;
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format2 = fmt.format(new Date(nextCheckMillis));
-        System.out.println("format2: " + format2);
-        System.out.println(dailyRollingFileAppender.getDeleteDateStr(new Date(), type));
     }
 }

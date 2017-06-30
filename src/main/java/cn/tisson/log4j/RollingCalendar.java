@@ -1,4 +1,4 @@
-package cn.tisson.container.log4j.extensions;
+package cn.tisson.log4j;
 
 import java.util.Calendar;
 import java.util.Date;
